@@ -10,7 +10,7 @@
  * under the same key, and an old app can outlive a publish. A new name means the
  * activate handler below deletes the old one outright.
  */
-const CACHE = "npz-phone-2026-08-01 06:11 · 94d0f7c"
+const CACHE = "npz-phone-2026-08-01 20:29 · b7b4f22"
 const SHELL = ['./', './index.html', './app.js', './manifest.webmanifest', './icon-192.png', './icon-512.png']
 
 self.addEventListener('install', (event) => {
