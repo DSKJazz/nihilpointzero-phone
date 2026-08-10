@@ -1,0 +1,45 @@
+name: Publish the phone app
+
+# Why this file exists: GitHub stores these files whether or not Pages is on, but it
+# only SERVES them once Pages is enabled. That used to be a switch somebody had to find
+# and click in the repository settings. `configure-pages` with `enablement: true` turns
+# it on through the API instead, so the first run of this workflow both switches Pages
+# on and publishes — nobody has to click anything, ever.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write # lets configure-pages CREATE the Pages site, not just deploy to it
+  id-token: write # required by deploy-pages
+
+# One publish at a time; a newer push wins.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      # The whole repo IS the site — index.html, app.js, the manifest, the service
+      # worker and the icons all sit at the root, and .nojekyll is already here. No
+      # build step, so `path: '.'` is correct.
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - id: deployment
+        uses: actions/deploy-pages@v4
